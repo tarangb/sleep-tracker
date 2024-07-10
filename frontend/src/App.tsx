@@ -5,16 +5,28 @@ import DataPage from './pages/DataPage';
 
 const App: React.FC = () => {
     return (
+        // <div>
+        //     <div>
+        //         <FormPage />
+        //     </div>
+        //     <div>
+        //         <Router>
+        //             <nav>
+        //                 <ul>
+        //                     <li><Link to="/data">Data</Link></li>
+        //                 </ul>
+        //             </nav>
+        //             <Routes>
+        //                 <Route path="/data" Component={DataPage} />
+        //             </Routes>
+        //         </Router>
+        //     </div>
+        // </div>
+
         <Router>
-            <nav>
-                <ul>
-                    <li><Link to="/form">Form</Link></li>
-                    <li><Link to="/data">Data</Link></li>
-                </ul>
-            </nav>
             <Routes>
-                <Route path="/form" Component={FormPage} />
-                <Route path="/data" Component={DataPage} />
+                <Route path="/form" element={<FormPage />} />
+                <Route path="/data" element={<DataPage />} />
             </Routes>
         </Router>
     );
