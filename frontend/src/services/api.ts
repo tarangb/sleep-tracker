@@ -13,7 +13,7 @@ export const getSleepStats = async (): Promise<Stats[]> => {
     return response.data;
 };
 
-export const getSleepDataLast7Days = async (name: string): Promise<BarChartData[]> => {
-    const response = await api.get(`/sleep/${name}/last7days`);
+export const getSleepDataLast7Days = async (name: string, gender: string): Promise<BarChartData[]> => {
+    const response = await api.get(`/sleep/${name}/${gender}/last7days`);
     return response.data;
 };

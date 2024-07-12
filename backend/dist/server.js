@@ -16,6 +16,17 @@ app.post('/api/sleep', (req, res) => {
     sleepData.push({ name, gender, sleepDuration, date });
     res.sendStatus(200);
 });
+app.put('/api/sleep', (req, res) => {
+    const { name, gender, sleepDuration, date } = req.body;
+    const index = sleepData.findIndex(data => data.name === name && data.gender === gender && data.date === date);
+    
+    if (index !== -1) {
+        sleepData[index].sleepDuration = sleepDuration;
+        res.sendStatus(200);
+    } else {
+        res.status(404).send('Record not found');
+    }
+});
 app.get('/api/sleep/stats', (req, res) => {
     const stats = Object.values(sleepData.reduce((acc, { name, gender }) => {
         if (!acc[name]) {

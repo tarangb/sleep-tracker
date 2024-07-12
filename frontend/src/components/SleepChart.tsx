@@ -12,15 +12,16 @@ echarts.use([TitleComponent, TooltipComponent, GridComponent, BarChart, LegendCo
 
 interface BarChartProps {
   userName: string;
+  userGender: string;
 }
 
-const BarChartComponent: React.FC<BarChartProps> = ({ userName }) => {
+const BarChartComponent: React.FC<BarChartProps> = ({ userName, userGender }) => {
   const [data, setData] = useState<BarChartData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getSleepDataLast7Days(userName); // Pass userName to fetch data for specific user
+        const result = await getSleepDataLast7Days(userName, userGender); // Pass userName and gender to fetch data for specific user
         setData(result); // Assuming result is an array of BarChartDataItem
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -28,7 +29,7 @@ const BarChartComponent: React.FC<BarChartProps> = ({ userName }) => {
     };
 
     fetchData();
-  }, [userName]); // Fetch data whenever userName prop changes
+  }, [userName, userGender]); // Fetch data whenever userName and userGender prop changes
 
   useEffect(() => {
     const chart = echarts.init(document.getElementById('chart') as HTMLDivElement);

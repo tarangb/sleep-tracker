@@ -6,9 +6,11 @@ import '../dataPage.css';
 
 const DataPage: React.FC = () => {
     const [selectedName, setSelectedName] = useState<string>('');
+    const [selectedGender, setSelectedGender] = useState<string>('');
 
-    const handleRowClick = (name: string) => {
+    const handleRowClick = (name: string, gender: string) => {
         setSelectedName(name);
+        setSelectedGender(gender);
     };
 
     return (
@@ -22,7 +24,7 @@ const DataPage: React.FC = () => {
                 <DataTable onRowClick={handleRowClick} />
                 {selectedName && (
                     <div className="chart-container">
-                        <BarChart userName={selectedName} />
+                        <BarChart userName={selectedName} userGender={selectedGender} />
                     </div>
                 )}
             </div>

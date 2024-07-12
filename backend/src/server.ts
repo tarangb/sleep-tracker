@@ -1,7 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { initializeDb, getDb } from './database';
 import { SleepData, Stats } from './interfaces';
+import { format, parseISO, isValid } from 'date-fns';
 
 const app = express();
 const PORT = 5000;
@@ -9,34 +11,89 @@ const PORT = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-let sleepData: SleepData[] = [];
+initializeDb();
 
-app.post('/api/sleep', (req: { body: SleepData; }, res: { sendStatus: (arg0: number) => void; }) => {
+// POST endpoint to add or update sleep data
+app.post('/api/sleep', async (req, res) => {
     const { name, gender, sleepDuration, date }: SleepData = req.body;
-    sleepData.push({ name, gender, sleepDuration, date });
-    res.sendStatus(200);
+    const db = await getDb();
+
+    try {
+        const parsedDate = new Date(date);
+        if (!isValid(parsedDate)) {
+            return res.status(400).send('Invalid date format');
+        }
+        const formattedDate = format(parsedDate, 'yyyy-MM-dd');
+
+        // Check if the record already exists
+        const existingRecord = await db.get('SELECT * FROM sleep_data WHERE name = ? AND gender = ? AND date = ?', [name, gender, formattedDate]);
+
+        if (existingRecord) {
+            // Update the existing record
+            await db.run('UPDATE sleep_data SET sleepDuration = ? WHERE name = ? AND gender = ? AND date = ?', [sleepDuration, name, gender, formattedDate]);
+        } else {
+            // Insert a new record
+            await db.run('INSERT INTO sleep_data (name, gender, sleepDuration, date) VALUES (?, ?, ?, ?)', [name, gender, sleepDuration, formattedDate]);
+        }
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
 });
 
-app.get('/api/sleep/stats', (req: any, res: { json: (arg0: Stats[]) => void; }) => {
-    const stats: Stats[] = Object.values(
-        sleepData.reduce((acc: { [key: string]: Stats }, { name, gender }: SleepData) => {
-            if (!acc[name]) {
-                acc[name] = { name, gender, count: 0 };
-            }
-            acc[name].count++;
-            return acc;
-        }, {})
-    );
-    res.json(stats);
+app.put('/api/sleep', async (req, res) => {
+    const { name, gender, sleepDuration, date }: SleepData = req.body;
+    const db = await getDb();
+
+    try {
+        const parsedDate = parseISO(date);
+        if (!isValid(parsedDate)) {
+            return res.status(400).send('Invalid date format');
+        }
+        const formattedDate = format(parsedDate, 'yyyy-MM-dd');
+        const result = await db.run(
+            'UPDATE sleep_data SET sleepDuration = ? WHERE name = ? AND gender = ? AND date = ?',
+            [sleepDuration, name, gender, formattedDate]
+        );
+
+        if (result.changes === 0) {
+            return res.status(404).send('Record not found');
+        }
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
 });
 
-app.get('/api/sleep/:name/last7days', (req: { params: { name: any; }; }, res: { json: (arg0: { date: string; sleepDuration: number; }[]) => void; }) => {
-    const { name } = req.params;
-    const last7DaysData = sleepData
-        .filter(entry => entry.name === name)
-        .slice(-7)
-        .map(({ date, sleepDuration }) => ({ date, sleepDuration }));
-    res.json(last7DaysData);
+app.get('/api/sleep/stats', async (req, res) => {
+    const db = await getDb();
+    try {
+        const rows = await db.all<Stats[]>('SELECT name, gender, COUNT(*) as count FROM sleep_data GROUP BY name, gender');
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
+});
+
+app.get('/api/sleep/:name/:gender/last7days', async (req, res) => {
+    const { name, gender } = req.params;
+    const db = await getDb();
+    
+    try {
+        const rows = await db.all<{ date: string; sleepDuration: number; }[]>(
+            'SELECT date, sleepDuration FROM sleep_data WHERE name = ? AND gender = ? ORDER BY date DESC LIMIT 7', 
+            [name, gender]
+        );
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
 });
 
 app.listen(PORT, () => {

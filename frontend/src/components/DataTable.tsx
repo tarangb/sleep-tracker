@@ -4,7 +4,7 @@ import { Stats } from '../interfaces';
 import '../dataTable.css';  // Make sure to import your CSS file
 
 interface Props {
-    onRowClick: (name: string) => void;
+    onRowClick: (name: string, gender: string) => void;
 }
 
 const DataTable: React.FC<Props> = ({ onRowClick }) => {
@@ -29,7 +29,7 @@ const DataTable: React.FC<Props> = ({ onRowClick }) => {
             </thead>
             <tbody>
                 {data.map((user, index) => (
-                    <tr key={index} onClick={() => onRowClick(user.name)} title="Click to view chart">
+                    <tr key={index} onClick={() => onRowClick(user.name, user.gender)} title="Click to view chart">
                         <td>{user.name}</td>
                         <td>{user.gender}</td>
                         <td>{user.count}</td>

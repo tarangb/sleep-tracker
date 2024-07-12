@@ -39,11 +39,11 @@ const Form: React.FC = () => {
         }
     };
 
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Ensure date is in yyyy-mm-dd format for storage
-        const formattedDate = e.target.value.split('-').reverse().join('-');
-        setDate(formattedDate);
-    };
+    // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     // Ensure date is in yyyy-mm-dd format for storage
+    //     const formattedDate = e.target.value.split('-').reverse().join('-');
+    //     setDate(formattedDate);
+    // };
 
     return (
         <div className="form-page">
@@ -88,8 +88,10 @@ const Form: React.FC = () => {
                         <span className="label-text">Date:</span>
                         <input
                             type="date"
-                            value={date.split('-').reverse().join('-')} // Display in dd/mm/yyyy format
-                            onChange={handleDateChange}
+                            // value={date.split('-').reverse().join('-')} // Display in dd/mm/yyyy format
+                            value = {date}
+                            // onChange={handleDateChange}
+                            onChange={e => setDate(e.target.value)}
                             className={`input ${errors.date ? 'input-error' : ''}`}
                         />
                         {errors.date && <span className="error-text">{errors.date}</span>}
