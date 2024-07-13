@@ -11,10 +11,7 @@ const initializeDb = async () => {
         filename: './database.sqlite',
         driver: sqlite3_1.default.Database
     });
-    // Drop the existing table if it exists (optional, for ensuring the primary key change)
-    // await db.exec(`
-    //     DROP TABLE IF EXISTS sleep_data;
-    // `);
+    
     // Create the table with the new primary key
     await db.exec(`
         CREATE TABLE IF NOT EXISTS sleep_data (

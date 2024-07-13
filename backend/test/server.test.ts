@@ -1,6 +1,7 @@
 // test/server.test.ts
 import request from 'supertest';
 import app from '../src/server'; // Adjust the path to your app file
+import { shutdownServer } from '../src/server';
 
 describe('Sleep Data API', () => {
     describe('POST /api/sleep', () => {
@@ -78,4 +79,9 @@ describe('Sleep Data API', () => {
             expect(response.body).toBeInstanceOf(Array);
         });
     });
+});
+
+
+afterAll(() => {
+    shutdownServer();
 });

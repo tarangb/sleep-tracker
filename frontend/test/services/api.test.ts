@@ -1,10 +1,9 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { submitSleepData, getSleepStats, getSleepDataLast7Days } from '../src/services/api';
-import { SleepData, Stats, BarChartData } from '../src/interfaces';
+import { api, submitSleepData, getSleepStats, getSleepDataLast7Days } from '../../src/services/api';
+import { SleepData, Stats, BarChartData } from '../../src/interfaces';
 
 // Mock Axios instance
-const mockApi = new MockAdapter(axios);
+const mockApi = new MockAdapter(api);
 
 describe('API Functions', () => {
     afterEach(() => {
@@ -36,7 +35,7 @@ describe('API Functions', () => {
 
         const response = await getSleepStats();
 
-        //expect(response).toEqual(stats);
+        expect(response).toEqual(stats);
     });
 
     it('getSleepDataLast7Days should fetch last 7 days sleep data successfully', async () => {
@@ -51,6 +50,6 @@ describe('API Functions', () => {
 
         const response = await getSleepDataLast7Days(name, gender);
 
-       // expect(response).toEqual(barChartData);
+       expect(response).toEqual(barChartData);
     });
 });

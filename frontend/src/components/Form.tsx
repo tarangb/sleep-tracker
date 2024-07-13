@@ -13,8 +13,8 @@ const Form: React.FC = () => {
     const sleepOptions = Array.from({ length: 24 }, (_, i) => i + 1); // Creates an array of numbers from 1 to 24
     const handleSleepDurationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSleepDuration(Number(event.target.value));
-    };
-
+    }
+        
     const [errors, setErrors] = useState({
         name: '',
         gender: '',
@@ -28,6 +28,7 @@ const Form: React.FC = () => {
         const newErrors = {
             name: name ? '' : 'Name is required',
             gender: gender ? '' : 'Gender is required',
+            //this isn't required as sleep duration field has default value of 1 now and is a drop down to have values 1-24.
             sleepDuration: sleepDuration > 0 ? '' : 'Sleep Duration must be positive',
             date: date ? '' : 'Date is required'
         };
@@ -43,12 +44,6 @@ const Form: React.FC = () => {
             setDate('');
         }
     };
-
-    // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     // Ensure date is in yyyy-mm-dd format for storage
-    //     const formattedDate = e.target.value.split('-').reverse().join('-');
-    //     setDate(formattedDate);
-    // };
 
     return (
         <div className="form-page">

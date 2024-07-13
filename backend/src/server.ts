@@ -96,8 +96,15 @@ app.get('/api/sleep/:name/:gender/last7days', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 export default app;
+
+// Gracefully shutdown
+export const shutdownServer = () => {
+    server.close(() => {
+        console.log('Server gracefully shut down');
+    });
+};

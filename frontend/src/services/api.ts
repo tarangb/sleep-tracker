@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { SleepData, Stats, BarChartData } from '../interfaces';
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: 'http://localhost:5000/api',
 });
 
@@ -17,5 +17,3 @@ export const getSleepDataLast7Days = async (name: string, gender: string): Promi
     const response = await api.get(`/sleep/${name}/${gender}/last7days`);
     return response.data;
 };
-
-export default api; // Optionally export the axios instance for advanced usage
