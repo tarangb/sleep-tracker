@@ -20,7 +20,6 @@ const DataPage: React.FC = () => {
                     <h1>Sleep Data</h1>
                     <Link to="/form" className="enter-data-button">Enter Sleep Data</Link>
                 </div>
-                <p className="note">NOTE: Click a row to see chart.</p>
                 <DataTable onRowClick={handleRowClick} />
                 {selectedName && (
                     <div className="chart-container">

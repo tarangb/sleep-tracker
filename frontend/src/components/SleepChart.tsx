@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as echarts from 'echarts/core';
-import { BarChart} from 'echarts/charts';
-import { GridComponent, LegendComponent, TitleComponent,  TooltipComponent, ToolboxComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { GridComponent, LegendComponent, TitleComponent, TooltipComponent, ToolboxComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { getSleepDataLast7Days } from '../services/api';
 import { BarChartData } from '../interfaces';
@@ -31,6 +31,7 @@ const BarChartComponent: React.FC<BarChartProps> = ({ userName, userGender }) =>
     fetchData();
   }, [userName, userGender]); // Fetch data whenever userName and userGender prop changes
 
+
   useEffect(() => {
     const chart = echarts.init(document.getElementById('chart') as HTMLDivElement);
 
@@ -38,10 +39,26 @@ const BarChartComponent: React.FC<BarChartProps> = ({ userName, userGender }) =>
     const sleepDurations = data.map(item => item.sleepDuration);
 
     const options = {
-      title: {
-        text: 'Sleep Time in Last 7 Days',
-        left: 'center'
-      },
+      title: [
+        {
+          text: 'Sleep Time in Last 7 Days',
+          left: 'center'
+        },
+        {
+          text: `{normal|Name:} ${userName}   {normal|Gender:} ${userGender}`,
+          left: 'center',
+          bottom: 0,
+          textStyle: {
+            fontSize: 14,
+            color: '#000',
+            rich: {
+              normal: {
+                fontWeight: 'normal'
+              }
+            }
+          }
+        }
+      ],
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -62,7 +79,10 @@ const BarChartComponent: React.FC<BarChartProps> = ({ userName, userGender }) =>
       series: [{
         data: sleepDurations,
         type: 'bar'
-      }]
+      }],
+      grid: {
+        bottom: 60 // Adjust this value to make space for the text
+      }
     };
 
     chart.setOption(options);
@@ -70,7 +90,7 @@ const BarChartComponent: React.FC<BarChartProps> = ({ userName, userGender }) =>
     return () => {
       chart.dispose();
     };
-  }, [data]);
+  }, [data, userName, userGender]); // Add userName and userGender to the dependencies
 
   return <div id="chart" style={{ width: '100%', height: '400px' }} />;
 };

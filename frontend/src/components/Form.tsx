@@ -7,8 +7,13 @@ import '../form.css';
 const Form: React.FC = () => {
     const [name, setName] = useState('');
     const [gender, setGender] = useState('');
-    const [sleepDuration, setSleepDuration] = useState<number>(0);
+    const [sleepDuration, setSleepDuration] = useState<number>(1); // Set default value to 1
     const [date, setDate] = useState('');
+
+    const sleepOptions = Array.from({ length: 24 }, (_, i) => i + 1); // Creates an array of numbers from 1 to 24
+    const handleSleepDurationChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSleepDuration(Number(event.target.value));
+    };
 
     const [errors, setErrors] = useState({
         name: '',
@@ -76,12 +81,15 @@ const Form: React.FC = () => {
                     </label>
                     <label className="label">
                         <span className="label-text">Sleep Duration:</span>
-                        <input
-                            type="number"
+                        <select
                             value={sleepDuration}
-                            onChange={e => setSleepDuration(Number(e.target.value))}
+                            onChange={handleSleepDurationChange}
                             className={`input ${errors.sleepDuration ? 'input-error' : ''}`}
-                        />
+                        >
+                            {sleepOptions.map(option => (
+                                <option key={option} value={option}>{option}</option>
+                            ))}
+                        </select>
                         {errors.sleepDuration && <span className="error-text">{errors.sleepDuration}</span>}
                     </label>
                     <label className="label">
@@ -89,7 +97,7 @@ const Form: React.FC = () => {
                         <input
                             type="date"
                             // value={date.split('-').reverse().join('-')} // Display in dd/mm/yyyy format
-                            value = {date}
+                            value={date}
                             // onChange={handleDateChange}
                             onChange={e => setDate(e.target.value)}
                             className={`input ${errors.date ? 'input-error' : ''}`}

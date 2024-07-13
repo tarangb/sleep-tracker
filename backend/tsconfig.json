@@ -2,11 +2,13 @@
   "compilerOptions": {
       "target": "es2017", // Set the target to ES2017 or later
       "lib": ["es2017", "dom"], // Include ES2017 and dom in the lib array        
-        "module": "commonjs",
+      "module": "commonjs",
       "outDir": "./dist",
-      "rootDir": "./src",
+      "rootDir": ".",
       "strict": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }

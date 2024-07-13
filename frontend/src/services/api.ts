@@ -17,3 +17,5 @@ export const getSleepDataLast7Days = async (name: string, gender: string): Promi
     const response = await api.get(`/sleep/${name}/${gender}/last7days`);
     return response.data;
 };
+
+export default api; // Optionally export the axios instance for advanced usage

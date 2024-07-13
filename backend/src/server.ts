@@ -83,10 +83,10 @@ app.get('/api/sleep/stats', async (req, res) => {
 app.get('/api/sleep/:name/:gender/last7days', async (req, res) => {
     const { name, gender } = req.params;
     const db = await getDb();
-    
+
     try {
         const rows = await db.all<{ date: string; sleepDuration: number; }[]>(
-            'SELECT date, sleepDuration FROM sleep_data WHERE name = ? AND gender = ? ORDER BY date DESC LIMIT 7', 
+            'SELECT date, sleepDuration FROM sleep_data WHERE name = ? AND gender = ? ORDER BY date DESC LIMIT 7',
             [name, gender]
         );
         res.json(rows);
@@ -99,3 +99,5 @@ app.get('/api/sleep/:name/:gender/last7days', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+export default app;
