@@ -46,7 +46,7 @@ describe('API Functions', () => {
             { date: '2023-07-09', sleepDuration: 6 }
         ];
 
-        mockApi.onGet(`/sleep/${name}/${gender}/last7days`).reply(200, barChartData);
+        mockApi.onGet(`/sleep/${name}/${gender}/last`).reply(200, barChartData);
 
         const response = await getSleepDataLast7Days(name, gender);
 

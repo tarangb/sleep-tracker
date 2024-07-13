@@ -14,6 +14,6 @@ export const getSleepStats = async (): Promise<Stats[]> => {
 };
 
 export const getSleepDataLast7Days = async (name: string, gender: string): Promise<BarChartData[]> => {
-    const response = await api.get(`/sleep/${name}/${gender}/last7days`);
+    const response = await api.get(`/sleep/${name}/${gender}/last`);
     return response.data;
 };

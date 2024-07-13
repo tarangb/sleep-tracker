@@ -71,9 +71,9 @@ describe('Sleep Data API', () => {
         });
     });
 
-    describe('GET /api/sleep/:name/:gender/last7days', () => {
+    describe('GET /api/sleep/:name/:gender/last', () => {
         it('should return last 7 days of sleep data', async () => {
-            const response = await request(app).get('/api/sleep/John/Male/last7days');
+            const response = await request(app).get('/api/sleep/John/Male/last');
 
             expect(response.status).toBe(200);
             expect(response.body).toBeInstanceOf(Array);

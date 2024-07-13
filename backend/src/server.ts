@@ -80,14 +80,21 @@ app.get('/api/sleep/stats', async (req, res) => {
     }
 });
 
-app.get('/api/sleep/:name/:gender/last7days', async (req, res) => {
+app.get('/api/sleep/:name/:gender/last/:days?', async (req, res) => {
     const { name, gender } = req.params;
     const db = await getDb();
 
+    let days = req.params.days ? parseInt(req.params.days) : 7; // Default to 7 if not provided
+    days = days > 30 ? 30 : days; // Enforce maximum of 30 days
+
+    if (isNaN(days) || days <= 0) {
+        return res.status(400).json({ error: 'Invalid number of days. It should be a positive number and not exceed 30.' });
+    }
+
     try {
         const rows = await db.all<{ date: string; sleepDuration: number; }[]>(
-            'SELECT date, sleepDuration FROM sleep_data WHERE name = ? AND gender = ? ORDER BY date DESC LIMIT 7',
-            [name, gender]
+            'SELECT date, sleepDuration FROM sleep_data WHERE name = ? AND gender = ? ORDER BY date DESC LIMIT ?',
+            [name, gender, days]
         );
         res.json(rows);
     } catch (error) {
@@ -95,6 +102,26 @@ app.get('/api/sleep/:name/:gender/last7days', async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+// app.get('/api/sleep/:name/last/:days?', async (req, res) => {
+//     const { name } = req.params;
+//     let days = req.params.days ? parseInt(req.params.days) : 7; // Default to 7 if not provided
+//     days = days > 30 ? 30 : days; // Enforce maximum of 30 days
+
+//     if (isNaN(days) || days <= 0) {
+//         return res.status(400).json({ error: 'Invalid number of days. It should be a positive number and not exceed 30.' });
+//     }
+
+//     const db = await getDb();
+//     try {
+//         const query = 'SELECT date, sleepDuration FROM sleep_data WHERE name = ? ORDER BY date DESC LIMIT ?';
+//         const rows = await db.all<{ date: string; sleepDuration: number; }[]>(query, [name, days]);
+//         res.json(rows);
+//     } catch (error) {
+//         console.error(error);
+//         res.sendStatus(500);
+//     }
+// });
 
 const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
@@ -105,6 +132,6 @@ export default app;
 // Gracefully shutdown
 export const shutdownServer = () => {
     server.close(() => {
-        console.log('Server gracefully shut down');
+        //console.log('Server gracefully shut down');
     });
 };
